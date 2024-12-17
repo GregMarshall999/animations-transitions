@@ -8,7 +8,7 @@
         />
 
         <div v-if="todos.length">
-            <ul>
+            <TransitionGroup tag="ul" name="list">
                 <li 
                     v-for="t in todos" 
                     :key="t.id" 
@@ -16,7 +16,7 @@
                 >
                     {{ t.text }}
                 </li>
-            </ul>
+            </TransitionGroup>
         </div>
         <div v-else>Toutes les tâches sont terminées!</div>
     </div>
@@ -53,6 +53,14 @@ const deleteTodo = pId => {
 </script>
 
 <style>
+
+.list-enter-from, .list-leave-to {
+    opacity: 0;
+    transform: scale(0.6);
+}
+.list-enter-active, .list-leave-active {
+    transition: all 0.4s ease;
+}
 
 input {
     width: 100%;
