@@ -7,18 +7,20 @@
             placeholder="Ajouter une tache..."
         />
 
-        <div v-if="todos.length">
-            <TransitionGroup tag="ul" name="list" appear>
-                <li 
-                    v-for="t in todos" 
-                    :key="t.id" 
-                    @click="deleteTodo(t.id)"
-                >
-                    {{ t.text }}
-                </li>
-            </TransitionGroup>
-        </div>
-        <div v-else>Toutes les tâches sont terminées!</div>
+        <Transition name="switch" mode="out-in">
+            <div v-if="todos.length">
+                <TransitionGroup tag="ul" name="list" appear>
+                    <li 
+                        v-for="t in todos" 
+                        :key="t.id" 
+                        @click="deleteTodo(t.id)"
+                    >
+                        {{ t.text }}
+                    </li>
+                </TransitionGroup>
+            </div>
+            <div v-else>Toutes les tâches sont terminées!</div>
+        </Transition>
     </div>
 </template>
 
@@ -61,14 +63,21 @@ const deleteTodo = pId => {
 .list-enter-active {
     transition: all 0.4s ease;
 }
-
 .list-leave-active {
     transition: all 0.4s ease;
     position: absolute;
 }
-
 .list-move {
     transition: all 0.3s ease;
+}
+
+.switch-enter-from, .switch-leave-to {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.switch-enter-active, .switch-leave-active {
+    transition: all 0.5s ease;
 }
 
 input {
