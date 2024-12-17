@@ -1,14 +1,10 @@
 <template>
 	<div class="about">
 		<Transition 
-			name="fade" 
 			appear
 			@before-enter="beforeEnter"
 			@enter="enter"
 			@after-enter="afterEnter"
-			@before-leave="beforeLeave"
-			@leave="leave"
-			@after-leave="afterLeave"
 		>
 			<h1 v-if="showTitle">A Propos</h1>
 		</Transition>
@@ -20,53 +16,36 @@
 </template>
 
 <script setup>
+import gsap from 'gsap';
 import { ref } from 'vue';
 
 const showTitle = ref(true);
 
 const beforeEnter = e => {
 	console.log('before enter', e);
+	e.style.transform = 'translateY(-60px)';
+	e.style.opacity = 0;
 }
 
-const enter = e => {
+const enter = (e, done) => {
 	console.log('enter');
-	e.style.color = 'red';
+
+	gsap.to(e, {
+		duration: 1, 
+		y: 0, 
+		opacity: 1, 
+		ease: 'bounce.out', 
+		onComplete: done
+	})
 }
 
 const afterEnter = e => {
 	console.log('after enter');
-
-	e.style.color = 'black';
-
-	//setTimeout(() => showTitle.value = false, 2000);
-}
-
-const beforeLeave = () => {
-	console.log('before leave');
-}
-
-const leave = () => {
-	console.log('leave');
-}
-
-const afterLeave = () => {
-	console.log('after leave');
-
-	setTimeout(() => showTitle.value = true, 1000);
 }
 
 </script>
 
 <style>
-
-.fade-enter-from, .fade-leave-to {
-	opacity: 0;
-}
-
-.fade-enter-active, .fade-leave-active {
-	transition: all 3s ease;
-}
-
 .about {
 	max-width: 600px;
 	margin: 20px auto;
