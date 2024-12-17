@@ -5,10 +5,29 @@
     <RouterLink :to="{ name: 'Contact' }">Contact</RouterLink>
 	</nav>
 
-	<RouterView />
+	<RouterView v-slot="{ Component }">
+		<Transition name="route" mode="out-in">
+			<component :is="Component"></component>
+		</Transition>
+  	</RouterView>
 </template>
 
 <style>
+.route-enter-from {
+	opacity: 0;
+	transform: translateX(100px);
+}
+.route-leave-to {
+	opacity: 0;
+	transform: translateX(-100px);
+}
+.route-enter-active {
+	transition: all 0.3s ease-out;
+}
+.route-leave-active {
+	transition: all 0.3s ease-in;
+}
+
 body {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   text-align: center;
