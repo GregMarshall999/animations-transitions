@@ -8,7 +8,7 @@
         />
 
         <div v-if="todos.length">
-            <TransitionGroup tag="ul" name="list">
+            <TransitionGroup tag="ul" name="list" appear>
                 <li 
                     v-for="t in todos" 
                     :key="t.id" 
@@ -58,8 +58,17 @@ const deleteTodo = pId => {
     opacity: 0;
     transform: scale(0.6);
 }
-.list-enter-active, .list-leave-active {
+.list-enter-active {
     transition: all 0.4s ease;
+}
+
+.list-leave-active {
+    transition: all 0.4s ease;
+    position: absolute;
+}
+
+.list-move {
+    transition: all 0.3s ease;
 }
 
 input {
