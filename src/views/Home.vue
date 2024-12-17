@@ -1,6 +1,8 @@
 <template>
 	<div class="home">
-		<Toast v-if="showToast"/>
+		<Transition name="toast">
+			<Toast v-if="showToast"/>
+		</Transition>
 		<Todos @bad-value="triggerToast" />
 	</div>
 </template>
@@ -22,6 +24,15 @@ const triggerToast = () => {
 .home {
 	display: flex;
 	justify-content: center;
+}
+
+.toast-enter-from, .toast-leave-to {
+	opacity: 0;
+	transform: translateY(-60px);
+}
+
+.toast-enter-active, .toast-leave-active {
+	transition: all 0.3s ease;
 }
 
 </style>
