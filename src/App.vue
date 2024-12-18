@@ -6,53 +6,70 @@
 	</nav>
 
 	<RouterView v-slot="{ Component }">
-		<Transition :name="transitionDirection" mode="out-in">
+		<Transition 
+      mode="out-in"
+      @before-enter="beforeEnter"
+      @enter="enter"
+      @leave="leave"
+    >
 			<component :is="Component"></component>
 		</Transition>
   </RouterView>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import gsap from 'gsap';
+import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-const routes = useRouter().getRoutes().map(r => r.path);
-const currentRoute = useRoute();
-const prevRoute = ref(currentRoute.path);
+const route = useRoute();
+const prevRoute = ref(route.path);
 
-const transitionDirection = computed(() => {
+const router = useRouter().getRoutes().map(r => r.path);
+
+const getXDirection = () => {
+  const currentIndex = router.indexOf(route.path);
+  const prevIndex = router.indexOf(prevRoute.value);
   
-  const currentIndex = routes.indexOf(currentRoute.path);
-  const prevIndex = routes.indexOf(prevRoute.value);
-
-  prevRoute.value = currentRoute.path;
-
   if(currentIndex < prevIndex) {
-    return 'route-left';
+    return -100;
   }
   else {
-    return 'route-right';
+    return 100;
   }
-});
+}
+
+const transitionDuration = 0.4;
+
+const beforeEnter = e => {
+  e.style.opacity = 0;
+  e.style.transform = `translateX(${getXDirection()}px)`;
+
+  prevRoute.value = route.path;
+}
+
+const enter = e => {
+  gsap.to(e, {
+    duration: transitionDuration, 
+    opacity: 1, 
+    x: 0, 
+    ease: 'ease-out'
+  })
+}
+
+const leave = (e, done) => {
+  gsap.to(e, {
+    duration: transitionDuration, 
+    opacity: 0, 
+    x: -getXDirection(), 
+    ease: 'ease-in', 
+    onComplete: done
+  })
+}
 
 </script>
 
 <style>
-.route-right-enter-from, .route-left-leave-to {
-	opacity: 0;
-	transform: translateX(100px);
-}
-.route-right-leave-to, .route-left-enter-from {
-	opacity: 0;
-	transform: translateX(-100px);
-}
-.route-right-enter-active, .route-left-enter-active {
-	transition: all 0.3s ease-out;
-}
-.route-right-leave-active, .route-left-leave-active {
-	transition: all 0.3s ease-in;
-}
-
 body {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   text-align: center;
