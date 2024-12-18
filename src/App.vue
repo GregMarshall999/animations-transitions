@@ -6,25 +6,50 @@
 	</nav>
 
 	<RouterView v-slot="{ Component }">
-		<Transition name="route" mode="out-in">
+		<Transition :name="transitionDirection" mode="out-in">
 			<component :is="Component"></component>
 		</Transition>
-  	</RouterView>
+  </RouterView>
 </template>
 
+<script setup>
+import { computed, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+
+const routes = useRouter().getRoutes().map(r => r.path);
+const currentRoute = useRoute();
+const prevRoute = ref(currentRoute.path);
+
+const transitionDirection = computed(() => {
+  
+  const currentIndex = routes.indexOf(currentRoute.path);
+  const prevIndex = routes.indexOf(prevRoute.value);
+
+  prevRoute.value = currentRoute.path;
+
+  if(currentIndex < prevIndex) {
+    return 'route-left';
+  }
+  else {
+    return 'route-right';
+  }
+});
+
+</script>
+
 <style>
-.route-enter-from {
+.route-right-enter-from, .route-left-leave-to {
 	opacity: 0;
 	transform: translateX(100px);
 }
-.route-leave-to {
+.route-right-leave-to, .route-left-enter-from {
 	opacity: 0;
 	transform: translateX(-100px);
 }
-.route-enter-active {
+.route-right-enter-active, .route-left-enter-active {
 	transition: all 0.3s ease-out;
 }
-.route-leave-active {
+.route-right-leave-active, .route-left-leave-active {
 	transition: all 0.3s ease-in;
 }
 
